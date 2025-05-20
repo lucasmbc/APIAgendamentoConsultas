@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "patients")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
