@@ -29,6 +29,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+	implementation 'org.glassfish:jakarta.el:4.0.2'
 }
 
 tasks.named('test') {
