@@ -22,7 +22,7 @@ public class Doctor extends Person {
     @Column(nullable = false)
     private String specialty;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "doctor", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
     private List<Consult> consultations = new ArrayList<>();
 
     public void addConsultation(Consult consult) {
