@@ -22,7 +22,7 @@ public class Patient extends Person{
 
     private LocalDate birthDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consult> consultations = new ArrayList<>();
 
     public void addConsultation(Consult consult) {
