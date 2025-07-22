@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/consultas")
@@ -34,7 +35,7 @@ public record ConsultController(ConsultService consultService) {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "404", description = "Consult not found")
     })
-    public ResponseEntity<ConsultDto> findById(@PathVariable Long id) {
+    public ResponseEntity<ConsultDto> findById(@PathVariable UUID id) {
         var consult = consultService.findById(id);
         return ResponseEntity.ok(new ConsultDto(consult));
     }
@@ -61,7 +62,7 @@ public record ConsultController(ConsultService consultService) {
             @ApiResponse(responseCode = "404", description = "Consult not found"),
             @ApiResponse(responseCode = "422", description = "Invalid consult data provided")
     })
-    public ResponseEntity<ConsultDto> update(@PathVariable Long id, @RequestBody ConsultDto consultDto) {
+    public ResponseEntity<ConsultDto> update(@PathVariable UUID id, @RequestBody ConsultDto consultDto) {
         var consult = consultService.update(id, consultDto.toModel());
         return ResponseEntity.ok(new ConsultDto(consult));
     }
@@ -72,7 +73,7 @@ public record ConsultController(ConsultService consultService) {
             @ApiResponse(responseCode = "204", description = "Consult deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Consult not found")
     })
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         consultService.delete(id);
         return ResponseEntity.noContent().build();
     }
