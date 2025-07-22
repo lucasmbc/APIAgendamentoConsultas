@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -19,7 +20,7 @@ import static java.util.Optional.ofNullable;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class DoctorDto {
-    Long id;
+    UUID id;
 
     @NotNull
     @NotBlank(message = "Doctor name must not be blank")
