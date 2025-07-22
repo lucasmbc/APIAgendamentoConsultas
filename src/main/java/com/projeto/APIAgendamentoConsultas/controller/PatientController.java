@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/pacientes")
@@ -34,7 +35,7 @@ public record PatientController(PatientService patientService) {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
-    public ResponseEntity<PatientDto> findById(@PathVariable Long id) {
+    public ResponseEntity<PatientDto> findById(@PathVariable UUID id) {
         var patient = patientService.findById(id);
         return ResponseEntity.ok(new PatientDto(patient));
     }
@@ -61,7 +62,7 @@ public record PatientController(PatientService patientService) {
             @ApiResponse(responseCode = "404", description = "Patient not found"),
             @ApiResponse(responseCode = "422", description = "Invalid patient data provided")
     })
-    public ResponseEntity<PatientDto> update(@PathVariable Long id, @RequestBody PatientDto patientDto) {
+    public ResponseEntity<PatientDto> update(@PathVariable UUID id, @RequestBody PatientDto patientDto) {
         var patient = patientService.update(id, patientDto.toModel());
         return ResponseEntity.ok(new PatientDto(patient));
     }
@@ -72,7 +73,7 @@ public record PatientController(PatientService patientService) {
             @ApiResponse(responseCode = "204", description = "Patient deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         patientService.delete(id);
         return ResponseEntity.noContent().build();
     }
