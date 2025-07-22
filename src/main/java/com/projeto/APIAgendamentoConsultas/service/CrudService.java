@@ -6,6 +6,8 @@ public interface CrudService<ID, T> {
     List<T> findAll();
     T findById(ID id);
     T create(T entity);
-    T update(ID id, T entity);
+    default T update(ID id, T entity) {
+        throw new UnsupportedOperationException("Update operation is not supported");
+    };
     void delete(ID id);
 }
