@@ -32,6 +32,7 @@ public final class PatientDto {
     private String email;
 
     @NotBlank(message = "CPF must not be blank")
+    @CPF
     private String cpf;
 
     @Past(message = "Birth date must be in the past")
