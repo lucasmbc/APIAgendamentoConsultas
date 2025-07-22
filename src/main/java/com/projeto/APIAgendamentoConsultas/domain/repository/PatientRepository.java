@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient, Long> {
+public interface PatientRepository extends JpaRepository<Patient, UUID> {
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
 
@@ -22,5 +23,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     @EntityGraph(attributePaths = "consultations")
     @Query("SELECT p FROM Patient p WHERE p.id = :id")
-    Optional<Patient> findByIdWithConsultations(@Param("id") Long id);
+    Optional<Patient> findByIdWithConsultations(@Param("id") UUID id);
 }

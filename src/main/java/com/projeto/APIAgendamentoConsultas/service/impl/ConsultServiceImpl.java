@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class ConsultServiceImpl implements ConsultService {
     }
 
     @Transactional(readOnly = true)
-    public Consult findById(Long id) {
+    public Consult findById(UUID id) {
         return this.consultRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
@@ -62,7 +63,7 @@ public class ConsultServiceImpl implements ConsultService {
     }
 
     @Transactional
-    public Consult update(Long id, Consult consultToUpdate) {
+    public Consult update(UUID id, Consult consultToUpdate) {
         Consult dbConsult = this.findById(id);
         if(!dbConsult.getId().equals(consultToUpdate.getId())) {
             throw new BusinessException("Update IDs must be the same.");
@@ -78,7 +79,7 @@ public class ConsultServiceImpl implements ConsultService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Consult dbConsult = this.findById(id);
         this.consultRepository.delete(dbConsult);
     }

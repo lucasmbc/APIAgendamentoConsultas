@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Transactional(readOnly = true)
-    public Doctor findById(Long id) {
+    public Doctor findById(UUID id) {
         return this.doctorRepository.findByIdWithConsultations(id).orElseThrow(NotFoundException::new);
     }
 
@@ -54,7 +55,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Transactional
-    public Doctor update(Long id, Doctor doctorToUpdate) {
+    public Doctor update(UUID id, Doctor doctorToUpdate) {
         Doctor dbDoctor = this.findById(id);
         if(!dbDoctor.getId().equals(doctorToUpdate.getId())) {
             throw new BusinessException("Update IDs must be the same.");
@@ -62,13 +63,14 @@ public class DoctorServiceImpl implements DoctorService {
 
         dbDoctor.setName(doctorToUpdate.getName());
         dbDoctor.setPhone(doctorToUpdate.getPhone());
+        dbDoctor.setEmail(doctorToUpdate.getEmail());
         dbDoctor.setSpecialty(doctorToUpdate.getSpecialty());
 
         return this.doctorRepository.save(dbDoctor);
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Doctor dbDoctor = this.findById(id);
         this.doctorRepository.delete(dbDoctor);
     }

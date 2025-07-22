@@ -8,12 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface ConsultRepository extends JpaRepository<Consult, Long> {
-    boolean existsByDoctorIdAndDateTime(Long doctorId, LocalDateTime dateTime);
-    boolean existsByPatientIdAndDateTimeBetween(Long patientId, LocalDateTime start, LocalDateTime end);
+public interface ConsultRepository extends JpaRepository<Consult, UUID> {
+    boolean existsByDoctorIdAndDateTime(UUID doctorId, LocalDateTime dateTime);
+    boolean existsByPatientIdAndDateTimeBetween(UUID patientId, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT c FROM Consult c WHERE c.doctor.id = :doctorId AND c.dateTime BETWEEN :start AND :end")
-    List<Consult> findByDoctorAndPeriod(@Param("doctorId") Long doctorId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<Consult> findByDoctorAndPeriod(@Param("doctorId") UUID doctorId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
