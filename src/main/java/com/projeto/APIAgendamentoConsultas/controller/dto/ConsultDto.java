@@ -12,13 +12,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public final class ConsultDto {
-    Long id;
+    UUID id;
 
     @FutureOrPresent(message = "A data da consulta não pode ser no passado")
     @NotNull(message = "The date and time to be created cannot be null")
@@ -29,10 +30,10 @@ public final class ConsultDto {
     String observations;
 
     @NotNull(message = "Patient ID cannot be null")
-    Long patientId;
+    UUID patientId;
 
     @NotNull(message = "Doctor ID cannot be null")
-    Long doctorId;
+    UUID doctorId;
 
     public ConsultDto(Consult model) {
         this(
