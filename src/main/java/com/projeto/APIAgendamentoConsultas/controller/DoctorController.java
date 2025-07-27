@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -18,10 +20,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/medicos")
+@RequiredArgsConstructor
 @Tag(name = "Doctors Controller")
-public record DoctorController(DoctorService doctorService) {
+public class DoctorController {
+
+    private final DoctorService doctorService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all doctors", description = "Retrieve a list of all registered doctors")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
     public ResponseEntity<List<DoctorDto>> findAll() {
@@ -31,6 +37,7 @@ public record DoctorController(DoctorService doctorService) {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get a doctor by ID", description = "Retrieve a specific doctor based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
@@ -42,6 +49,7 @@ public record DoctorController(DoctorService doctorService) {
     }
 
     @GetMapping("/especialidade")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all doctors by specialty", description = "Retrieve a list of all registered doctors by specialty")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
     public ResponseEntity<List<DoctorDto>> findBySpecialty(@RequestParam String specialty) {
@@ -51,6 +59,7 @@ public record DoctorController(DoctorService doctorService) {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Create a new doctor", description = "Create a new doctor and return the created doctor's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Doctor created successfully"),
@@ -66,6 +75,7 @@ public record DoctorController(DoctorService doctorService) {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Update a doctor", description = "Update the data of an existing doctor based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Doctor updated successfully"),
@@ -78,6 +88,7 @@ public record DoctorController(DoctorService doctorService) {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(summary = "Delete a doctor", description = "Delete an existing doctor based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Doctor deleted successfully"),

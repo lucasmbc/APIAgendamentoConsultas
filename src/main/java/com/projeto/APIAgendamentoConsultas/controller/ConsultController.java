@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -17,10 +19,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/consultas")
+@RequiredArgsConstructor
 @Tag(name = "Consults Controller")
-public record ConsultController(ConsultService consultService) {
+public class ConsultController {
+
+    private final ConsultService consultService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all consults", description = "Retrieve a list of all registered consults")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
     public ResponseEntity<List<ConsultDto>> findAll() {
@@ -30,6 +36,7 @@ public record ConsultController(ConsultService consultService) {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get a consult by ID", description = "Retrieve a specific consult based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
@@ -41,6 +48,7 @@ public record ConsultController(ConsultService consultService) {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Create a new consult", description = "Create a new consult and return the created consult's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Consult created successfully"),
@@ -56,6 +64,7 @@ public record ConsultController(ConsultService consultService) {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Update a consult", description = "Update the data of an existing consult based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Consult updated successfully"),
@@ -68,6 +77,7 @@ public record ConsultController(ConsultService consultService) {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @Operation(summary = "Delete a consult", description = "Delete an existing consult based on its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Consult deleted successfully"),
