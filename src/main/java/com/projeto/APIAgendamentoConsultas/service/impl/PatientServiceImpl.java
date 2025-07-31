@@ -47,9 +47,6 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public Patient update(UUID id, Patient patientToUpdate) {
         Patient dbPatient = this.findById(id);
-        if (!dbPatient.getId().equals(patientToUpdate.getId())) {
-            throw new BusinessException("Update IDs must be the same.");
-        }
 
         dbPatient.setName(patientToUpdate.getName());
         dbPatient.setBirthDate(patientToUpdate.getBirthDate());
