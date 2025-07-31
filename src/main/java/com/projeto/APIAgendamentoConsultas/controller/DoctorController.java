@@ -1,6 +1,8 @@
 package com.projeto.APIAgendamentoConsultas.controller;
 
-import com.projeto.APIAgendamentoConsultas.controller.dto.DoctorDto;
+import com.projeto.APIAgendamentoConsultas.controller.dto.DoctorRequestDto;
+import com.projeto.APIAgendamentoConsultas.controller.dto.DoctorResponseDto;
+import com.projeto.APIAgendamentoConsultas.controller.mapper.DoctorMapper;
 import com.projeto.APIAgendamentoConsultas.service.DoctorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/medicos")
@@ -25,15 +26,15 @@ import java.util.stream.Collectors;
 public class DoctorController {
 
     private final DoctorService doctorService;
+    private final DoctorMapper mapper;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all doctors", description = "Retrieve a list of all registered doctors")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<DoctorDto>> findAll() {
-        var doctors = doctorService.findAll();
-        var doctorsDto = doctors.stream().map(DoctorDto::new).collect(Collectors.toList());
-        return ResponseEntity.ok(doctorsDto);
+    public ResponseEntity<List<DoctorResponseDto>> findAll() {
+        var doctors = doctorService.findAll().stream().map(mapper::toResponseDto).toList();
+        return ResponseEntity.ok(doctors);
     }
 
     @GetMapping("/{id}")
@@ -43,18 +44,18 @@ public class DoctorController {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "404", description = "Patient not found")
     })
-    public ResponseEntity<DoctorDto> findById(@PathVariable UUID id) {
+    public ResponseEntity<DoctorResponseDto> findById(@PathVariable UUID id) {
         var doctor = doctorService.findById(id);
-        return ResponseEntity.ok(new DoctorDto(doctor));
+        return ResponseEntity.ok(mapper.toResponseDto(doctor));
     }
 
     @GetMapping("/especialidade")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all doctors by specialty", description = "Retrieve a list of all registered doctors by specialty")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<DoctorDto>> findBySpecialty(@RequestParam String specialty) {
+    public ResponseEntity<List<DoctorResponseDto>> findBySpecialty(@RequestParam String specialty) {
         var doctorsSpecialty = doctorService.findBySpecialty(specialty);
-        var doctorsDto = doctorsSpecialty.stream().map(DoctorDto::new).toList();
+        var doctorsDto = doctorsSpecialty.stream().map(mapper::toResponseDto).toList();
         return ResponseEntity.ok(doctorsDto);
     }
 
@@ -65,13 +66,13 @@ public class DoctorController {
             @ApiResponse(responseCode = "201", description = "Doctor created successfully"),
             @ApiResponse(responseCode = "422", description = "Invalid doctor data provided")
     })
-    public ResponseEntity<DoctorDto> create(@Valid @RequestBody DoctorDto doctorDto) {
-        var doctor = doctorService.create(doctorDto.toModel());
+    public ResponseEntity<DoctorResponseDto> create(@Valid @RequestBody DoctorRequestDto requestDto) {
+        var doctor = doctorService.create(mapper.toModel(requestDto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(doctor.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(new DoctorDto(doctor));
+        return ResponseEntity.created(location).body(mapper.toResponseDto(doctor));
     }
 
     @PutMapping("/{id}")
@@ -82,9 +83,9 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Doctor not found"),
             @ApiResponse(responseCode = "422", description = "Invalid doctor data provided")
     })
-    public ResponseEntity<DoctorDto> update(@PathVariable UUID id, @RequestBody DoctorDto doctorDto) {
-        var doctor = doctorService.update(id, doctorDto.toModel());
-        return ResponseEntity.ok(new DoctorDto(doctor));
+    public ResponseEntity<DoctorResponseDto> update(@PathVariable UUID id, @RequestBody DoctorRequestDto requestDto) {
+        var doctor = doctorService.update(id, mapper.toModel(requestDto));
+        return ResponseEntity.ok(mapper.toResponseDto(doctor));
     }
 
     @DeleteMapping("/{id}")

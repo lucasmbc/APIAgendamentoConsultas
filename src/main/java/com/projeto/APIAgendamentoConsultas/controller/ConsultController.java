@@ -1,6 +1,8 @@
 package com.projeto.APIAgendamentoConsultas.controller;
 
-import com.projeto.APIAgendamentoConsultas.controller.dto.ConsultDto;
+import com.projeto.APIAgendamentoConsultas.controller.dto.ConsultRequestDto;
+import com.projeto.APIAgendamentoConsultas.controller.dto.ConsultResponseDto;
+import com.projeto.APIAgendamentoConsultas.controller.mapper.ConsultMapper;
 import com.projeto.APIAgendamentoConsultas.service.ConsultService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,15 +26,15 @@ import java.util.UUID;
 public class ConsultController {
 
     private final ConsultService consultService;
+    private final ConsultMapper mapper;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all consults", description = "Retrieve a list of all registered consults")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<ConsultDto>> findAll() {
-        var consults = consultService.findAll();
-        var consultDto = consults.stream().map(ConsultDto::new).toList();
-        return ResponseEntity.ok(consultDto);
+    public ResponseEntity<List<ConsultResponseDto>> findAll() {
+        var consults = consultService.findAll().stream().map(mapper::toResponseDto).toList();
+        return ResponseEntity.ok(consults);
     }
 
     @GetMapping("/{id}")
@@ -42,9 +44,9 @@ public class ConsultController {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "404", description = "Consult not found")
     })
-    public ResponseEntity<ConsultDto> findById(@PathVariable UUID id) {
+    public ResponseEntity<ConsultResponseDto> findById(@PathVariable UUID id) {
         var consult = consultService.findById(id);
-        return ResponseEntity.ok(new ConsultDto(consult));
+        return ResponseEntity.ok(mapper.toResponseDto(consult));
     }
 
     @PostMapping
@@ -54,13 +56,13 @@ public class ConsultController {
             @ApiResponse(responseCode = "201", description = "Consult created successfully"),
             @ApiResponse(responseCode = "422", description = "Invalid consult data provided")
     })
-    public ResponseEntity<ConsultDto> create(@Valid @RequestBody ConsultDto consultDto) {
-        var consult = consultService.create(consultDto.toModel());
+    public ResponseEntity<ConsultResponseDto> create(@Valid @RequestBody ConsultRequestDto requestDto) {
+        var consult = consultService.create(mapper.toModel(requestDto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(consult.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(new ConsultDto(consult));
+        return ResponseEntity.created(location).body(mapper.toResponseDto(consult));
     }
 
     @PutMapping("/{id}")
@@ -71,9 +73,9 @@ public class ConsultController {
             @ApiResponse(responseCode = "404", description = "Consult not found"),
             @ApiResponse(responseCode = "422", description = "Invalid consult data provided")
     })
-    public ResponseEntity<ConsultDto> update(@PathVariable UUID id, @RequestBody ConsultDto consultDto) {
-        var consult = consultService.update(id, consultDto.toModel());
-        return ResponseEntity.ok(new ConsultDto(consult));
+    public ResponseEntity<ConsultResponseDto> update(@PathVariable UUID id, @RequestBody ConsultRequestDto requestDto) {
+        var consult = consultService.update(id, mapper.toModel(requestDto));
+        return ResponseEntity.ok(mapper.toResponseDto(consult));
     }
 
     @DeleteMapping("/{id}")
