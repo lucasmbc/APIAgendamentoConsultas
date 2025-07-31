@@ -10,5 +10,5 @@ public record DoctorResponseDto(
         String phone,
         String crm,
         String specialty,
-        List<ConsultDto> consult
+        List<ConsultResponseDto> consult
 ) {}

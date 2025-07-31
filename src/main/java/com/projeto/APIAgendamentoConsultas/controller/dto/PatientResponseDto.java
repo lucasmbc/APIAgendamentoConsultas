@@ -11,5 +11,5 @@ public record PatientResponseDto(
         String cpf,
         LocalDate birthDate,
         String phone,
-        List<ConsultDto> consult
+        List<ConsultResponseDto> consult
 ) {}

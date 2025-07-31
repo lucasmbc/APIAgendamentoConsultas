@@ -1,6 +1,5 @@
 package com.projeto.APIAgendamentoConsultas.controller.mapper;
 
-import com.projeto.APIAgendamentoConsultas.controller.dto.ConsultDto;
 import com.projeto.APIAgendamentoConsultas.controller.dto.PatientRequestDto;
 import com.projeto.APIAgendamentoConsultas.controller.dto.PatientResponseDto;
 import com.projeto.APIAgendamentoConsultas.domain.model.Patient;
@@ -13,6 +12,8 @@ import static java.util.Optional.ofNullable;
 @Component
 @RequiredArgsConstructor
 public class PatientMapper {
+
+    private final ConsultMapper consultMapper;
 
     public Patient toModel(PatientRequestDto dto) {
         Patient patient = new Patient();
@@ -33,7 +34,7 @@ public class PatientMapper {
                 patient.getCpf(),
                 patient.getBirthDate(),
                 patient.getPhone(),
-                ofNullable(patient.getConsultations()).orElse(emptyList()).stream().map(ConsultDto::new).toList()
+                ofNullable(patient.getConsultations()).orElse(emptyList()).stream().map(consultMapper::toResponseDto).toList()
         );
     }
 }
