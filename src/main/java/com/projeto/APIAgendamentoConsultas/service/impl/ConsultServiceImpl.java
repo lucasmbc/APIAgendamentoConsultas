@@ -65,8 +65,9 @@ public class ConsultServiceImpl implements ConsultService {
     @Transactional
     public Consult update(UUID id, Consult consultToUpdate) {
         Consult dbConsult = this.findById(id);
-        if(!dbConsult.getId().equals(consultToUpdate.getId())) {
-            throw new BusinessException("Update IDs must be the same.");
+
+        if(!doctorRepository.existsById(consultToUpdate.getDoctor().getId()) || !patientRepository.existsById(consultToUpdate.getPatient().getId())) {
+            throw new NotFoundException();
         }
 
         dbConsult.setStatus(consultToUpdate.getStatus());
