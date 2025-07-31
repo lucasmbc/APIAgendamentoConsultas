@@ -57,9 +57,6 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional
     public Doctor update(UUID id, Doctor doctorToUpdate) {
         Doctor dbDoctor = this.findById(id);
-        if(!dbDoctor.getId().equals(doctorToUpdate.getId())) {
-            throw new BusinessException("Update IDs must be the same.");
-        }
 
         dbDoctor.setName(doctorToUpdate.getName());
         dbDoctor.setPhone(doctorToUpdate.getPhone());
