@@ -32,7 +32,25 @@ public class DoctorController {
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all doctors", description = "Retrieve a list of all registered doctors")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<DoctorResponseDto>> findAll() {
+    public ResponseEntity<List<DoctorResponseDto>> findAll(
+            @RequestParam(value = "specialty", required = false) String specialty,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "crm", required = false) String crm
+    ) {
+        if(specialty != null) {
+            var doctorsSpecialty = doctorService.findBySpecialty(specialty).stream().map(mapper::toResponseDto).toList();
+            return ResponseEntity.ok(doctorsSpecialty);
+        }
+
+        if(name != null) {
+            var doctorsName = doctorService.findByName(name).stream().map(mapper::toResponseDto).toList();
+            return ResponseEntity.ok(doctorsName);
+        }
+
+        if(crm != null) {
+            var doctorsCrm = doctorService.findCrm(crm).stream().map(mapper::toResponseDto).toList();
+            return ResponseEntity.ok(doctorsCrm);
+        }
         var doctors = doctorService.findAll().stream().map(mapper::toResponseDto).toList();
         return ResponseEntity.ok(doctors);
     }
@@ -47,16 +65,6 @@ public class DoctorController {
     public ResponseEntity<DoctorResponseDto> findById(@PathVariable UUID id) {
         var doctor = doctorService.findById(id);
         return ResponseEntity.ok(mapper.toResponseDto(doctor));
-    }
-
-    @GetMapping("/especialidade")
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
-    @Operation(summary = "Get all doctors by specialty", description = "Retrieve a list of all registered doctors by specialty")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<DoctorResponseDto>> findBySpecialty(@RequestParam String specialty) {
-        var doctorsSpecialty = doctorService.findBySpecialty(specialty);
-        var doctorsDto = doctorsSpecialty.stream().map(mapper::toResponseDto).toList();
-        return ResponseEntity.ok(doctorsDto);
     }
 
     @PostMapping

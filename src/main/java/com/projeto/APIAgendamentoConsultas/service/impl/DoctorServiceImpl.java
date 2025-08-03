@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,25 +21,41 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Transactional(readOnly = true)
     public List<Doctor> findAll() {
-        if(doctorRepository.findAllWithConsultations().isEmpty()) {
+        if(doctorRepository.findAll().isEmpty()) {
             throw new NotFoundException();
         }
 
-        return this.doctorRepository.findAllWithConsultations();
+        return this.doctorRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Doctor findById(UUID id) {
-        return this.doctorRepository.findByIdWithConsultations(id).orElseThrow(NotFoundException::new);
+        return this.doctorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     public List<Doctor> findBySpecialty(String specialty) {
-        if(doctorRepository.findBySpecialtyIgnoreCase(specialty).isEmpty()) {
+        if(doctorRepository.findBySpecialtyStartingWithIgnoreCase(specialty).isEmpty()) {
             throw new NotFoundException();
         }
 
-        return this.doctorRepository.findBySpecialtyIgnoreCase(specialty);
+        return this.doctorRepository.findBySpecialtyStartingWithIgnoreCase(specialty);
+    }
+
+    public List<Doctor> findByName(String name) {
+        if(doctorRepository.findByNameStartingWithIgnoreCase(name).isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        return doctorRepository.findByNameStartingWithIgnoreCase(name);
+    }
+
+    public List<Doctor> findCrm(String crm) {
+        if(!doctorRepository.existsByCrm(crm)) {
+            throw new NotFoundException();
+        }
+
+        return doctorRepository.findByCrm(crm);
     }
 
     @Transactional
