@@ -16,15 +16,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     boolean existsByCrm(String crm);
     boolean existsByEmail(String email);
 
-    @EntityGraph(attributePaths = "consultations")
-    @Query("SELECT d FROM Doctor d WHERE LOWER(d.specialty) LIKE LOWER(:specialty)")
-    List<Doctor> findBySpecialtyIgnoreCase(@Param("specialty") String specialty);
-
-    @EntityGraph(attributePaths = "consultations")
-    @Query("SELECT d FROM Doctor d")
-    List<Doctor> findAllWithConsultations();
-
-    @EntityGraph(attributePaths = "consultations")
-    @Query("SELECT d FROM Doctor d WHERE d.id = :id")
-    Optional<Doctor> findByIdWithConsultations(@Param("id") UUID id);
+    List<Doctor> findBySpecialtyStartingWithIgnoreCase(String specialty);
+    List<Doctor> findByNameStartingWithIgnoreCase(String name);
+    List<Doctor> findByCrm(String crm);
 }
