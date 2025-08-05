@@ -16,12 +16,6 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     boolean existsByCpf(String cpf);
     boolean existsByEmail(String email);
 
-//    @Query("SELECT DISTINCT p FROM Patient p LEFT JOIN FETCH p.consultations")
-    @EntityGraph(attributePaths = "consultations")
-    @Query("SELECT p FROM Patient p")
-    List<Patient> findAllWithConsultations();
-
-    @EntityGraph(attributePaths = "consultations")
-    @Query("SELECT p FROM Patient p WHERE p.id = :id")
-    Optional<Patient> findByIdWithConsultations(@Param("id") UUID id);
+    List<Patient> findByNameStartingWithIgnoreCase(String name);
+    List<Patient> findByCpf(String cpf);
 }
