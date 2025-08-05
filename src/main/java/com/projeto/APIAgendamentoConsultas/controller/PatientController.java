@@ -32,7 +32,19 @@ public class PatientController {
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERADOR', 'GERENTE')")
     @Operation(summary = "Get all patients", description = "Retrieve a list of all registered patients")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
-    public ResponseEntity<List<PatientResponseDto>> findAll() {
+    public ResponseEntity<List<PatientResponseDto>> findAll(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "cpf", required = false) String cpf) {
+        if(name != null) {
+            var patientsName = patientService.findByName(name).stream().map(mapper::toResponseDto).toList();
+            return ResponseEntity.ok(patientsName);
+        }
+
+        if(cpf != null) {
+            var patientByCpf = patientService.findByCpf(cpf).stream().map(mapper::toResponseDto).toList();
+            return ResponseEntity.ok(patientByCpf);
+        }
+
         var patients = patientService.findAll().stream().map(mapper::toResponseDto).toList();
         return ResponseEntity.ok(patients);
     }

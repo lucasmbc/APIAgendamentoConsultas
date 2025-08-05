@@ -22,12 +22,28 @@ public class PatientServiceImpl implements PatientService {
 
     @Transactional(readOnly = true)
     public List<Patient> findAll() {
-        return this.patientRepository.findAllWithConsultations();
+        return this.patientRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Patient findById(UUID id) {
-        return this.patientRepository.findByIdWithConsultations(id).orElseThrow(NotFoundException::new);
+        return this.patientRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Patient> findByName(String name) {
+        if(this.patientRepository.findByNameStartingWithIgnoreCase(name).isEmpty()) {
+            throw new NotFoundException();
+        }
+        return this.patientRepository.findByNameStartingWithIgnoreCase(name);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Patient> findByCpf(String cpf) {
+        if(!patientRepository.existsByCpf(cpf)) {
+            throw new NotFoundException();
+        }
+        return patientRepository.findByCpf(cpf);
     }
 
     @Transactional
