@@ -15,6 +15,5 @@ public interface ConsultRepository extends JpaRepository<Consult, UUID> {
     boolean existsByDoctorIdAndDateTime(UUID doctorId, LocalDateTime dateTime);
     boolean existsByPatientIdAndDateTimeBetween(UUID patientId, LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT c FROM Consult c WHERE c.doctor.id = :doctorId AND c.dateTime BETWEEN :start AND :end")
-    List<Consult> findByDoctorAndPeriod(@Param("doctorId") UUID doctorId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<Consult> findByDoctorIdAndDateTimeBetween(UUID doctorId, LocalDateTime start, LocalDateTime end);
 }
