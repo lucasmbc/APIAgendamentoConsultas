@@ -35,6 +35,15 @@ public class ConsultServiceImpl implements ConsultService {
         return this.consultRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
+    public List<Consult> findByDoctorIdAndStartDateBetween(UUID doctorId, LocalDateTime start, LocalDateTime end) {
+        if(consultRepository.findByDoctorIdAndDateTimeBetween(doctorId, start, end).isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        return this.consultRepository.findByDoctorIdAndDateTimeBetween(doctorId, start, end);
+    }
+
     @Transactional
     public Consult create(Consult consultToCreate) {
 
