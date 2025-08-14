@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/pacientes")
 @RequiredArgsConstructor
-@Tag(name = "Patients Controller", description = "RESTful API for managing clinic.")
+@Tag(name = "Patients", description = "RESTful API for managing clinic.")
 public class PatientController {
 
     private final PatientService patientService;

@@ -23,7 +23,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/consultas")
 @RequiredArgsConstructor
-@Tag(name = "Consults Controller")
+@Tag(name = "Consults")
 public class ConsultController {
 
     private final ConsultService consultService;

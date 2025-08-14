@@ -1,11 +1,13 @@
 package com.projeto.APIAgendamentoConsultas.controller.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+@Schema(name = "User Request")
 public record UserRequestDto(
 
         @NotBlank(message = "Username must not be blank")

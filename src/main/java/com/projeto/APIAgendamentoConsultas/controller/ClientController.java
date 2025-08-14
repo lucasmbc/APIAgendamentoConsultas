@@ -3,6 +3,7 @@ package com.projeto.APIAgendamentoConsultas.controller;
 import com.projeto.APIAgendamentoConsultas.controller.dto.ClientDto;
 import com.projeto.APIAgendamentoConsultas.controller.mapper.ClientMapper;
 import com.projeto.APIAgendamentoConsultas.service.ClientService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("clients")
 @RequiredArgsConstructor
+@Tag(name = "Clients")
 public class ClientController {
 
     private final ClientService service;

@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
-@Tag(name = "Users Controller")
+@Tag(name = "Users")
 public record UserController(UserService userService, UserMapper mapper) {
 
     @PostMapping

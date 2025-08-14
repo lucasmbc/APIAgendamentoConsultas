@@ -1,8 +1,10 @@
 package com.projeto.APIAgendamentoConsultas.controller.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(name = "Doctor Request")
 public record DoctorRequestDto(
 
         @NotBlank(message = "Doctor name must not be blank")

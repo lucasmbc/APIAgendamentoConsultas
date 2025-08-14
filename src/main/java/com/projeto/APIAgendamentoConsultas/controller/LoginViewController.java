@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Login View Controller")
+@Tag(name = "Login View")
 public class LoginViewController {
 
     @GetMapping("/login")
