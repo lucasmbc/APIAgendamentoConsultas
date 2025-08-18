@@ -2,10 +2,12 @@ package com.projeto.APIAgendamentoConsultas.service.impl;
 
 import com.projeto.APIAgendamentoConsultas.domain.model.Doctor;
 import com.projeto.APIAgendamentoConsultas.domain.repository.DoctorRepository;
+import com.projeto.APIAgendamentoConsultas.domain.specification.DoctorSpecifications;
 import com.projeto.APIAgendamentoConsultas.service.DoctorService;
 import com.projeto.APIAgendamentoConsultas.service.exception.BusinessException;
 import com.projeto.APIAgendamentoConsultas.service.exception.NotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Transactional(readOnly = true)
     public List<Doctor> findAll() {
-        if(doctorRepository.findAll().isEmpty()) {
+        if (doctorRepository.findAll().isEmpty()) {
             throw new NotFoundException();
         }
 
@@ -29,33 +31,22 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Transactional(readOnly = true)
-    public Doctor findById(UUID id) {
-        return this.doctorRepository.findById(id).orElseThrow(NotFoundException::new);
+    public List<Doctor> findDoctors(String specialty, String name, String crm) {
+
+        List<Doctor> doctors = doctorRepository.findAll(
+                Specification.where(DoctorSpecifications.hasSpecialty(specialty))
+                        .and(DoctorSpecifications.hasName(name))
+                        .and(DoctorSpecifications.hasCrm(crm))
+        );
+
+        if (doctors.isEmpty()) throw new NotFoundException();
+
+        return doctors;
     }
 
     @Transactional(readOnly = true)
-    public List<Doctor> findBySpecialty(String specialty) {
-        if(doctorRepository.findBySpecialtyStartingWithIgnoreCase(specialty).isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        return this.doctorRepository.findBySpecialtyStartingWithIgnoreCase(specialty);
-    }
-
-    public List<Doctor> findByName(String name) {
-        if(doctorRepository.findByNameStartingWithIgnoreCase(name).isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        return doctorRepository.findByNameStartingWithIgnoreCase(name);
-    }
-
-    public List<Doctor> findCrm(String crm) {
-        if(!doctorRepository.existsByCrm(crm)) {
-            throw new NotFoundException();
-        }
-
-        return doctorRepository.findByCrm(crm);
+    public Doctor findById(UUID id) {
+        return this.doctorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Transactional

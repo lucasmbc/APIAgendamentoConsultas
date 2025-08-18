@@ -35,18 +35,13 @@ public class ConsultController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation successful")})
     public ResponseEntity<List<ConsultResponseDto>> findAll(
             @RequestParam(value = "doctorId", required = false) String doctorId,
+            @RequestParam(value = "patientId", required = false) String patientId,
             @RequestParam(value = "start", required = false) String start,
             @RequestParam(value = "end", required = false) String end
     ) {
-        if (doctorId != null && start != null && end != null) {
-            var consultsByDoctorIdAndStartDateBetween = consultService.findByDoctorIdAndStartDateBetween(
-                    UUID.fromString(doctorId),
-                    LocalDateTime.parse(start),
-                    LocalDateTime.parse(end)
-            ).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(consultsByDoctorIdAndStartDateBetween);
-        }
-        var consults = consultService.findAll().stream().map(mapper::toResponseDto).toList();
+
+        var consults = consultService.findConsults(doctorId, patientId, start, end).stream().map(mapper::toResponseDto).toList();
+
         return ResponseEntity.ok(consults);
     }
 

@@ -6,6 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PatientService extends CrudService<UUID, Patient>{
-    List<Patient> findByName(String name);
-    List<Patient> findByCpf(String cpf);
+    List<Patient> findPatients(String name, String cpf);
 }

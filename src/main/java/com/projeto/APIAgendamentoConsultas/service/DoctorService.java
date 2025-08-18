@@ -7,7 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DoctorService extends CrudService<UUID, Doctor>{
-    List<Doctor> findBySpecialty(String specialty);
-    List<Doctor> findByName(String name);
-    List<Doctor> findCrm(String crm);
+    List<Doctor> findDoctors(String specialty, String name, String crm);
 }

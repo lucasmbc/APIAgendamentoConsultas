@@ -6,10 +6,12 @@ import com.projeto.APIAgendamentoConsultas.domain.model.Patient;
 import com.projeto.APIAgendamentoConsultas.domain.repository.ConsultRepository;
 import com.projeto.APIAgendamentoConsultas.domain.repository.DoctorRepository;
 import com.projeto.APIAgendamentoConsultas.domain.repository.PatientRepository;
+import com.projeto.APIAgendamentoConsultas.domain.specification.ConsultSpecifications;
 import com.projeto.APIAgendamentoConsultas.service.ConsultService;
 import com.projeto.APIAgendamentoConsultas.service.exception.BusinessException;
 import com.projeto.APIAgendamentoConsultas.service.exception.NotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,17 +33,31 @@ public class ConsultServiceImpl implements ConsultService {
     }
 
     @Transactional(readOnly = true)
-    public Consult findById(UUID id) {
-        return this.consultRepository.findById(id).orElseThrow(NotFoundException::new);
+    public List<Consult> findConsults(String doctorId, String patientId, String start, String end) {
+        Specification<Consult> spec = Specification.where(null);
+
+        if (doctorId != null) {
+            spec = spec.and(ConsultSpecifications.hasDoctorId(UUID.fromString(doctorId)));
+        }
+        if (patientId != null) {
+            spec = spec.and(ConsultSpecifications.hasPatientId(UUID.fromString(patientId)));
+        }
+        if (start != null && end != null) {
+            LocalDateTime startDate = LocalDateTime.parse(start);
+            LocalDateTime endDate = LocalDateTime.parse(end);
+            spec = spec.and(ConsultSpecifications.startDateBetween(startDate, endDate));
+        }
+
+        List<Consult> consults = consultRepository.findAll(spec);
+
+        if(consults.isEmpty()) throw new NotFoundException();
+
+        return consults;
     }
 
     @Transactional(readOnly = true)
-    public List<Consult> findByDoctorIdAndStartDateBetween(UUID doctorId, LocalDateTime start, LocalDateTime end) {
-        if(consultRepository.findByDoctorIdAndDateTimeBetween(doctorId, start, end).isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        return this.consultRepository.findByDoctorIdAndDateTimeBetween(doctorId, start, end);
+    public Consult findById(UUID id) {
+        return this.consultRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Transactional

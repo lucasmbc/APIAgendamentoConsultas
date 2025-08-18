@@ -2,10 +2,12 @@ package com.projeto.APIAgendamentoConsultas.service.impl;
 
 import com.projeto.APIAgendamentoConsultas.domain.model.Patient;
 import com.projeto.APIAgendamentoConsultas.domain.repository.PatientRepository;
+import com.projeto.APIAgendamentoConsultas.domain.specification.PatientSpecifications;
 import com.projeto.APIAgendamentoConsultas.service.PatientService;
 import com.projeto.APIAgendamentoConsultas.service.exception.BusinessException;
 import com.projeto.APIAgendamentoConsultas.service.exception.NotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,24 +28,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Transactional(readOnly = true)
-    public Patient findById(UUID id) {
-        return this.patientRepository.findById(id).orElseThrow(NotFoundException::new);
+    public List<Patient> findPatients(String name, String cpf) {
+
+        List<Patient> patients = patientRepository.findAll(
+                Specification.where(PatientSpecifications.hasName(name))
+                        .and(PatientSpecifications.hasCpf(cpf))
+        );
+
+        if (patients.isEmpty()) throw new NotFoundException();
+
+        return patients;
     }
 
     @Transactional(readOnly = true)
-    public List<Patient> findByName(String name) {
-        if(this.patientRepository.findByNameStartingWithIgnoreCase(name).isEmpty()) {
-            throw new NotFoundException();
-        }
-        return this.patientRepository.findByNameStartingWithIgnoreCase(name);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Patient> findByCpf(String cpf) {
-        if(!patientRepository.existsByCpf(cpf)) {
-            throw new NotFoundException();
-        }
-        return patientRepository.findByCpf(cpf);
+    public Patient findById(UUID id) {
+        return this.patientRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Transactional

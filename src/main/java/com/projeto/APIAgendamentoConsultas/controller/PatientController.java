@@ -35,17 +35,8 @@ public class PatientController {
     public ResponseEntity<List<PatientResponseDto>> findAll(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "cpf", required = false) String cpf) {
-        if(name != null) {
-            var patientsName = patientService.findByName(name).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(patientsName);
-        }
 
-        if(cpf != null) {
-            var patientByCpf = patientService.findByCpf(cpf).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(patientByCpf);
-        }
-
-        var patients = patientService.findAll().stream().map(mapper::toResponseDto).toList();
+        var patients = patientService.findPatients(name, cpf).stream().map(mapper::toResponseDto).toList();
         return ResponseEntity.ok(patients);
     }
 

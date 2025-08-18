@@ -7,5 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ConsultService extends CrudService<UUID, Consult> {
-    List<Consult> findByDoctorIdAndStartDateBetween(UUID doctorId, LocalDateTime start, LocalDateTime end);
+
+    List<Consult> findConsults(String doctorId, String patientId, String start, String end);
 }

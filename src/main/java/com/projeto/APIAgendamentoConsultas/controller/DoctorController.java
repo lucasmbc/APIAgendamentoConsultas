@@ -37,21 +37,9 @@ public class DoctorController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "crm", required = false) String crm
     ) {
-        if(specialty != null) {
-            var doctorsSpecialty = doctorService.findBySpecialty(specialty).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(doctorsSpecialty);
-        }
 
-        if(name != null) {
-            var doctorsName = doctorService.findByName(name).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(doctorsName);
-        }
+        var doctors = doctorService.findDoctors(specialty, name, crm).stream().map(mapper::toResponseDto).toList();
 
-        if(crm != null) {
-            var doctorsCrm = doctorService.findCrm(crm).stream().map(mapper::toResponseDto).toList();
-            return ResponseEntity.ok(doctorsCrm);
-        }
-        var doctors = doctorService.findAll().stream().map(mapper::toResponseDto).toList();
         return ResponseEntity.ok(doctors);
     }
 
