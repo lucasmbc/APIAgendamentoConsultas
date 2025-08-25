@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.5.3'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server:3.5.3'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql:42.7.7'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
